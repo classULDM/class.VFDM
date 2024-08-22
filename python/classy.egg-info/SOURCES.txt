@@ -1,0 +1,8 @@
+README
+setup.py
+/home/tomas/Desktop/class.VFDM/python/../python/classy.pyx
+/home/tomas/Dropbox/Doctorado/CLASS/class.VF_backup/python/../python/classy.pyx
+classy.egg-info/PKG-INFO
+classy.egg-info/SOURCES.txt
+classy.egg-info/dependency_links.txt
+classy.egg-info/top_level.txt

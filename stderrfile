@@ -1,0 +1,21 @@
+E
+======================================================================
+ERROR: Failure: ImportError (No module named 'test_class')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/nose/failure.py", line 39, in runTest
+    raise self.exc_val.with_traceback(self.tb)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/nose/loader.py", line 417, in loadTestsFromName
+    module = self.importer.importFromPath(
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/nose/importer.py", line 47, in importFromPath
+    return self.importFromDir(dir_path, fqname)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/nose/importer.py", line 79, in importFromDir
+    fh, filename, desc = find_module(part, path)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/imp.py", line 296, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named 'test_class'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

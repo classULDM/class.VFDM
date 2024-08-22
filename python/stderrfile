@@ -1,0 +1,438 @@
+............................EEEEEEEEEEEEEEEEEEEEEEEEEEEE
+======================================================================
+ERROR: test_scenario_0000
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 333, in classy.Class.compute
+classy.CosmoComputationError: <unprintable CosmoComputationError object>
+
+======================================================================
+ERROR: test_scenario_0001
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0002
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0003
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0004
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0005
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0006
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0007
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0008
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0009
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0010
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0011
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0012
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0013
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0014
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0015
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0016
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0017
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0018
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0019
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0020
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0021
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0022
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0023
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0024
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0025
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0026
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 337, in test_scenario
+    self.cosmo.compute()
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+======================================================================
+ERROR: test_scenario_0027
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/site-packages/parameterized/parameterized.py", line 533, in standalone_func
+    return func(*(a + p.args), **p.kwargs)
+  File "/home/mleize/Dropbox/class_public-3.2.0_axiones/python/test_class.py", line 334, in test_scenario
+    self.assertRaises(CosmoSevereError, self.cosmo.compute)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 739, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+  File "/home/mleize/miniconda3/envs/cosmo-analysis/lib/python3.9/unittest/case.py", line 201, in handle
+    callable_obj(*args, **kwargs)
+  File "classy.pyx", line 289, in classy.Class.compute
+    if isinstance(add,str):
+  File "classy.pyx", line 161, in classy.Class._fillparfile
+    raise CosmoSevereError("bad call")
+TypeError: expected bytes, str found
+
+----------------------------------------------------------------------
+Ran 56 tests in 0.013s
+
+FAILED (errors=28)
