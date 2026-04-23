@@ -328,6 +328,7 @@ struct thermodynamics
 
   ErrorMsg error_message; /**< zone for writing error messages */
 
+  short is_allocated; /**< flag is set to true if allocated */
   //@}
 
 };
@@ -518,6 +519,8 @@ extern "C" {
                           struct thermodynamics * pth);
 
   int thermodynamics_free(struct thermodynamics * pth);
+
+  int thermodynamics_free_input(struct thermodynamics * pth);
 
   /* internal functions of the module */
 

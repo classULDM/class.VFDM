@@ -86,6 +86,8 @@ int fourier_pk_at_z(
   if ((pk_output == pk_linear) && (pfo->ic_size > 1) && (out_pk_ic != NULL))
     do_ic = _TRUE_;
 
+  class_test(pk_output == pk_nonlinear && pfo->method == nl_none, pfo->error_message, "Cannot get nonlinear power spectrum when no nonlinear method is employed");
+
   /** - case z=0 requiring no interpolation in z */
   if (z == 0) {
 
@@ -129,7 +131,7 @@ int fourier_pk_at_z(
     if (ln_tau <= pfo->ln_tau[0]) {
 
       /** --> if ln(tau) much too small, raise an error */
-      class_test(ln_tau<pfo->ln_tau[0]-_EPSILON_,
+      class_test(ln_tau<pfo->ln_tau[0]-100.*_EPSILON_,
                  pfo->error_message,
                  "requested z was not inside of tau tabulation range (Requested ln(tau_=%.10e, Min %.10e). Solution might be to increase input parameter z_max_pk (see explanatory.ini)",ln_tau,pfo->ln_tau[0]);
 
@@ -1640,6 +1642,7 @@ int fourier_init(
                "Your non-linear method variable is set to %d, out of the range defined in fourier.h",pfo->method);
   }
 
+  pfo->is_allocated = _TRUE_;
   return _SUCCESS_;
 }
 
@@ -1706,6 +1709,7 @@ int fourier_free(
     free(pfo->pk_eq_ddw_and_ddOmega);
   }
 
+  pfo->is_allocated = _FALSE_;
   return _SUCCESS_;
 }
 
@@ -1772,7 +1776,7 @@ int fourier_indices(
 
   /** - get list of k values */
 
-  class_call(fourier_get_k_list(ppr,ppt,pfo),
+  class_call(fourier_get_k_list(ppr,ppm,ppt,pfo),
              pfo->error_message,
              pfo->error_message);
 
@@ -1853,6 +1857,7 @@ int fourier_indices(
 
 int fourier_get_k_list(
                        struct precision *ppr,
+                       struct primordial * ppm,
                        struct perturbations * ppt,
                        struct fourier * pfo
                        ) {
@@ -1877,6 +1882,7 @@ int fourier_get_k_list(
                "could not reach extrapolated value k = %.10e starting from k = %.10e with k_per_decade of %.10e in _MAX_NUM_INTERPOLATION_=%i steps",
                ppr->hmcode_max_k_extra,k_max,ppr->k_per_decade_for_pk,_MAX_NUM_EXTRAPOLATION_
                );
+
     pfo->k_size_extra = pfo->k_size+index_k;
   }
   /** - otherwise, same number of values as in perturbation module */
@@ -1902,6 +1908,13 @@ int fourier_get_k_list(
     pfo->ln_k[index_k] = log(k) + exponent*log(10.);
   }
 
+  class_test(pfo->k[pfo->k_size_extra-1]>exp(ppm->lnk[ppm->lnk_size-1]) && ppm->primordial_spec_type != analytic_Pk,
+             pfo->error_message,
+             "Setting the output to HMcode with a large 'hmcode_max_k_extra' and using the primordial spectrum to not analytic is incompatible. Either use the analytic power spectrum or set a smaller 'hmcode_max_k_extra' (k_max_hmcode=%.5e , k_max_primordial=%.5e)",
+             pfo->k[pfo->k_size_extra-1],
+             exp(ppm->lnk[ppm->lnk_size-1])
+             )
+
   return _SUCCESS_;
 }
 
@@ -1922,7 +1935,6 @@ int fourier_get_tau_list(
 
   /** -> for linear calculations: only late times are considered, given the value z_max_pk inferred from the ionput */
   pfo->ln_tau_size = ppt->ln_tau_size;
-  pfo->index_ln_tau_pk = ppt->index_ln_tau_pk;
 
   if (ppt->ln_tau_size > 1) {
 

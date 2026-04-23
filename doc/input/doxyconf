@@ -2482,11 +2482,11 @@ DOT_PATH               =
 
 DOTFILE_DIRS           =
 
-# The MvfILE_DIRS tag can be used to specify one or more directories that
-# contain msc files that are included in the documentation (see the \mvfile
+# The MSCFILE_DIRS tag can be used to specify one or more directories that
+# contain msc files that are included in the documentation (see the \mscfile
 # command).
 
-MvfILE_DIRS           =
+MSCFILE_DIRS           =
 
 # The DIAFILE_DIRS tag can be used to specify one or more directories that
 # contain dia files that are included in the documentation (see the \diafile

@@ -150,6 +150,8 @@ struct perturbations
   int l_lss_max; /**< maximum l value for LSS \f$ C_l \f$'s (density and lensing potential in  bins) */
   double k_max_for_pk; /**< maximum value of k in 1/Mpc required for the output of P(k,z) and T(k,z) */
 
+  short want_lcmb_full_limber; /**< In general, do we want to use the full Limber scheme introduced in v3.2.2? With this full Limber scheme, the calculation of the CMB lensing potential spectrum C_l^phiphi for l > ppr->l_switch_limber is based on a new integration scheme. Compared to the previous scheme, which can be recovered by switching this parameter to _FALSE_, the new scheme uses a larger k_max and a coarser k-grid (or q-grid) than the CMB transfer function. The new scheme is used by default, because the old one is inaccurate at large l due to the too small k_max. */
+
   int selection_num;                            /**< number of selection functions
                                                    (i.e. bins) for matter density \f$ C_l \f$'s */
   enum selection_type selection;                /**< type of selection functions */
@@ -196,6 +198,8 @@ struct perturbations
 
   enum possible_gauges gauge; /**< gauge in which to perform this calculation */
 
+  short has_matter_source_in_current_gauge; /**< whether to keep matter and baryon+CDM sources in current gauge, instead of automatic conversion to gauge-invariant variables */
+
   //@}
 
   /** @name - indices running on modes (scalar, vector, tensor) */
@@ -241,7 +245,14 @@ struct perturbations
   short has_source_delta_idr;  /**< do we need source for delta of interacting dark radiation? */
   short has_source_delta_dcdm; /**< do we need source for delta of DCDM? */
   short has_source_delta_fld;  /**< do we need source for delta of dark energy? */
-  short has_source_delta_vf;  /**< do we need source for delta from scalar field? */
+  short has_source_delta_vf;  /**< do we need source for delta from vector field? */
+  short has_source_gw_plus;      /**< do we need source for VFDM tensor h+? */
+  short has_source_gwdot_plus;   /**< do we need source for VFDM tensor dh+? */
+  short has_source_gw_cross;     /**< do we need source for VFDM tensor hx? */
+  short has_source_gwdot_cross;  /**< do we need source for VFDM tensor dhx? */
+  short has_lcdm_tensor;      /**< integrate LCDM h+ in scalar sector (no VF sources)? */
+  short has_source_gw_t;      /**< store h from standard tensor sector (with radiation damping)? */
+  short has_source_gwdot_t;   /**< store hdot from standard tensor sector? */
   short has_source_delta_dr;   /**< do we need source for delta of decay radiation? */
   short has_source_delta_ur;   /**< do we need source for delta of ultra-relativistic neutrinos/relics? */
   short has_source_delta_ncdm; /**< do we need source for delta of all non-cold dark matter species (e.g. massive neutrinos)? */
@@ -255,8 +266,8 @@ struct perturbations
   short has_source_theta_idr;  /**< do we need source for theta of interacting dark radiation? */
   short has_source_theta_dcdm; /**< do we need source for theta of DCDM? */
   short has_source_theta_fld;  /**< do we need source for theta of dark energy? */
-  short has_source_theta_vf;  /**< do we need source for theta of scalar field? */
-  short has_source_shear_vf;  /**< do we need source for shear of scalar field? */
+  short has_source_theta_vf;  /**< do we need source for theta of vector field? */
+  short has_source_shear_vf;  /**< do we need source for shear of vector field? */
   short has_source_theta_dr;   /**< do we need source for theta of ultra-relativistic neutrinos/relics? */
   short has_source_theta_ur;   /**< do we need source for theta of ultra-relativistic neutrinos/relics? */
   short has_source_theta_ncdm; /**< do we need source for theta of all non-cold dark matter species (e.g. massive neutrinos)? */
@@ -268,6 +279,7 @@ struct perturbations
   short has_source_h_prime;    /**< do we need source for metric fluctuation h'? */
   short has_source_eta;        /**< do we need source for metric fluctuation eta? */
   short has_source_eta_prime;  /**< do we need source for metric fluctuation eta'? */
+  short has_source_eta_prime_prime;  /**< do we need source for metric fluctuation eta''? */
   short has_source_H_T_Nb_prime; /**< do we need source for metric fluctuation H_T_Nb'? */
   short has_source_k2gamma_Nb; /**< do we need source for metric fluctuation gamma in Nbody gauge? */
 
@@ -289,8 +301,14 @@ struct perturbations
   int index_tp_delta_idm; /**< index value for delta of interacting dark matter */
   int index_tp_delta_dcdm;/**< index value for delta of DCDM */
   int index_tp_delta_fld;  /**< index value for delta of dark energy */
-  int index_tp_delta_vf;  /**< index value for delta of scalar field */
-  int index_tp_delta_p_vf;
+  int index_tp_delta_vf;  /**< index value for delta of vector field */
+  int index_tp_delta_p_vf; /**< index value for delta_p of vector field */
+  int index_tp_gw_plus;      /**< index value for VFDM tensor h+ */
+  int index_tp_gwdot_plus;   /**< index value for VFDM tensor dh+ */
+  int index_tp_gw_cross;     /**< index value for VFDM tensor hx */
+  int index_tp_gwdot_cross;  /**< index value for VFDM tensor dhx */
+  int index_tp_gw_t;      /**< index value for standard tensor sector h (with radiation) */
+  int index_tp_gwdot_t;   /**< index value for standard tensor sector hdot */
   int index_tp_delta_dr; /**< index value for delta of decay radiation */
   int index_tp_delta_ur; /**< index value for delta of ultra-relativistic neutrinos/relics */
   int index_tp_delta_idr; /**< index value for delta of interacting dark radiation */
@@ -306,8 +324,8 @@ struct perturbations
   int index_tp_theta_cdm;   /**< index value for theta of cold dark matter */
   int index_tp_theta_dcdm;  /**< index value for theta of DCDM */
   int index_tp_theta_fld;   /**< index value for theta of dark energy */
-  int index_tp_theta_vf;   /**< index value for theta of scalar field */
-  int index_tp_shear_vf;   /**< index value for shear of scalar field */
+  int index_tp_theta_vf;   /**< index value for theta of vector field */
+  int index_tp_shear_vf;   /**< index value for shear of vector field */
   int index_tp_theta_ur;    /**< index value for theta of ultra-relativistic neutrinos/relics */
   int index_tp_theta_idr;   /**< index value for theta of interacting dark radiation */
   int index_tp_theta_idm;   /**< index value for theta of interacting dark matter */
@@ -321,9 +339,11 @@ struct perturbations
   int index_tp_h;            /**< index value for metric fluctuation h */
   int index_tp_h_prime;      /**< index value for metric fluctuation h' */
   int index_tp_h_prime_prime;  /**< index value for metric fluctuation h'' */
-  int index_tp_source_bao;   /**< index value for \delta_g's source in BAO */
   int index_tp_eta;          /**< index value for metric fluctuation eta */
   int index_tp_eta_prime;    /**< index value for metric fluctuation eta' */
+  int index_tp_eta_prime_prime;    /**< index value for metric fluctuation eta'' */
+  int index_tp_alpha;
+  int index_tp_alpha_prime;
   int index_tp_H_T_Nb_prime; /**< index value for metric fluctuation H_T_Nb' */
   int index_tp_k2gamma_Nb;   /**< index value for metric fluctuation gamma times k^2 in Nbody gauge */
 
@@ -395,7 +415,6 @@ struct perturbations
                                final time range required for the output of
                                Fourier transfer functions (used for interpolations) */
   int ln_tau_size;         /**< total number of values in this array */
-  int index_ln_tau_pk;     /**< first index relevant for output of P(k,z) and T(k,z) */
 
   double *** late_sources; /**< Pointer towards the source interpolation table
                               late_sources[index_md]
@@ -444,6 +463,8 @@ struct perturbations
 
   ErrorMsg error_message; /**< zone for writing error messages */
 
+  short is_allocated; /**< flag is set to true if allocated */
+
   //@}
 
 };
@@ -478,16 +499,18 @@ struct perturbations_vector
   int index_pt_delta_fld;  /**< dark energy density in true fluid case */
   int index_pt_theta_fld;  /**< dark energy velocity in true fluid case */
   int index_pt_Gamma_fld;  /**< unique dark energy dynamical variable in PPF case */
-  
-  //Mati: comento los proximos dos y agrego 3
-  //int index_pt_phi_vf;  /**< scalar field density */
-  //int index_pt_phi_prime_vf;  /**< scalar field velocity */
-  int index_pt_omega_vf;  /**< scalar field frequency */
-  int index_pt_delta0L_vf;  /**< scalar field first density contrast */
-  int index_pt_delta1L_vf;  /**< scalar field second desnity contrast */
-  int index_pt_delta0T_vf;  /**< scalar field first density contrast */
-  int index_pt_delta1T_vf;  /**< scalar field second desnity contrast */
-   
+  int index_pt_kappa_vf;    /**< vector field oscillating frequency */
+  int index_pt_delta0L_vf;  /**< vector field longitudinal density contrast 0 */
+  int index_pt_delta1L_vf;  /**< vector field longitudinal density contrast 1 */
+  int index_pt_delta0T_vf;  /**< vector field transverse density contrast 0 */
+  int index_pt_delta1T_vf;  /**< vector field transverse density contrast 1 */
+  int index_pt_delta0T2_vf; /**< vector field second transverse density contrast 0 */
+  int index_pt_delta1T2_vf; /**< vector field second transverse density contrast 1 */
+  int index_pt_gw_plus;        /**< tensor perturbation h+ coupled to scalar sector */
+  int index_pt_gwdot_plus;     /**< time derivative of h+ coupled to scalar sector */
+  int index_pt_gw_cross;     /**< tensor perturbation hx coupled to scalar sector */
+  int index_pt_gwdot_cross;  /**< time derivative of hx coupled to scalar sector */
+
   int index_pt_delta_ur; /**< density of ultra-relativistic neutrinos/relics */
   int index_pt_theta_ur; /**< velocity of ultra-relativistic neutrinos/relics */
   int index_pt_shear_ur; /**< shear of ultra-relativistic neutrinos/relics */
@@ -553,9 +576,12 @@ struct perturbations_workspace
   int index_mt_h_prime;       /**< h' (wrt conf. time) in synchronous gauge */
   int index_mt_h_prime_prime; /**< h'' (wrt conf. time) in synchronous gauge */
   int index_mt_eta_prime;     /**< eta' (wrt conf. time) in synchronous gauge */
+  int index_mt_eta_prime_prime;     /**< eta'' (wrt conf. time) in synchronous gauge */
   int index_mt_alpha;         /**< \f$ \alpha = (h' + 6 \eta') / (2 k^2) \f$ in synchronous gauge */
   int index_mt_alpha_prime;   /**< \f$ \alpha'\f$ wrt conf. time) in synchronous gauge */
   int index_mt_gw_prime_prime;/**< second derivative wrt conformal time of gravitational wave field, often called h */
+  int index_mt_gw_prime_prime_plus; /**< second derivative of h+ in scalar sector (SVT coupling) */
+  int index_mt_gw_prime_prime_cross; /**< second derivative of hx in scalar sector (SVT coupling) */
   int index_mt_V_prime;       /**< derivative of Newtonian gauge vector metric perturbation V */
   int index_mt_hv_prime_prime;/**< Second derivative of Synchronous gauge vector metric perturbation \f$ h_v\f$ */
   int mt_size;                /**< size of metric perturbation vector */
@@ -581,6 +607,8 @@ struct perturbations_workspace
   double delta_p;		    /**< total pressure perturbation (gives Tii) */
 
   double rho_plus_p_tot;    /**< total (rho+p) (used to infer theta_tot from rho_plus_p_theta) */
+
+  double h_plus_constant_mode; /**< constant mode C = h_+ - h_Weinberg, computed at IC for tensor matching */
 
   double gw_source;		    /**< stress-energy source term in Einstein's tensor equations (gives Tij[tensor]) */
   double vector_source_pi;	/**< first stress-energy source term in Einstein's vector equations */

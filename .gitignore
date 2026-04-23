@@ -1,0 +1,50 @@
+# ---- CLASS build artefacts ----
+build/
+*.o
+*.a
+libclass.a
+class
+*.prof
+*.dSYM
+*.so
+
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+python/build/
+python/classy.cpp
+python/*.egg-info/
+.ipynb_checkpoints/
+
+# ---- CLASS outputs / scratch data ----
+output/
+*out
+debug_params.pkl
+
+# ---- Figures (keep folder, ignore contents so notebooks can save here) ----
+Figures/*
+!Figures/.gitkeep
+
+# ---- Docs built artefacts ----
+doc/manual/html/
+doc/manual/latex/
+
+# ---- RealSpaceInterface cache ----
+RealSpaceInterface/cache/
+
+# ---- Editor / OS ----
+*~
+.DS_Store
+.vscode/
+.vscode-test/
+.idea/
+
+# ---- Claude / AI assistants ----
+.claude/
+.claude*
+CLAUDE.md
+.claudeignore
+.anthropic/
+.aider*
+.cursor*

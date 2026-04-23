@@ -10,10 +10,6 @@
 #include "dei_rkck.h"
 #include "parser.h"
 
-/** list of possible types of spatial curvature */
-
-enum spatial_curvature {flat,open,closed};
-
 /** list of possible parametrisations of the DE equation of state */
 
 enum equation_of_state {CLP,EDE};
@@ -34,6 +30,7 @@ enum vecback_format {short_info, normal_info, long_info};
 enum interpolation_method {inter_normal, inter_closeby};
 
 enum possible_vector_background_modes {frw, bianchi};
+enum possible_svt_coupling {yes, no};
 
 /**
  * background structure containing all the background information that
@@ -108,13 +105,11 @@ struct background
 
   double Omega0_lambda;    /**< \f$ \Omega_{0_\Lambda} \f$: cosmological constant */
   double Omega0_fld;       /**< \f$ \Omega_{0 de} \f$: fluid */
-  double Omega0_vf;       /**< \f$ \Omega_{0 vf} \f$: scalar field */
-  double theta_Ak;
-
-  // Mati: agrego estos 3
-  double Omega_phi_ini_vf;        /**< \f$ \Omega_{0 vf} \f$ : scalar field 2*/
-  double theta_phi_ini_vf;       /* Angular internal variable */
-  double y_phi_ini_vf; /* Second potential variable normalized */
+  double Omega0_vf;       /**< \f$ \Omega_{0 vf} \f$: vector field dark matter */
+  double gamma_Ak;        /**< angle between vector field and preferred direction */
+  double Omega_ini_vf;    /**< initial value of log(Omega_A) for vector field */
+  double theta_ini_vf;    /**< initial angular internal variable */
+  double y_ini_vf;        /**< initial value of y = m/(aH), normalized mass variable */
 
   double metric_shear_ini;  /* initial condition for \sigma_{\parallel} */
 
@@ -127,17 +122,11 @@ struct background
   double cs2_fld;  /**< \f$ c^2_{s~DE} \f$: sound speed of the fluid in the frame comoving with the fluid (so, this is
                       not [delta p/delta rho] in the synchronous or newtonian gauge!) */
   double Omega_EDE;        /**< \f$ wa_{DE} \f$: Early Dark Energy density parameter */
-  double * vf_parameters; /**< list of parameters describing the scalar field potential */
-  short attractor_ic_vf;  /**< whether the scalar field has attractor initial conditions */
-
-
-
-
-enum possible_vector_background_modes vector_background_mode;
-
+  double * vf_parameters; /**< list of parameters describing the vector field [m_a, theta_ini, Omega_ini_factor] */
+  short attractor_ic_vf;  /**< whether the vector field has attractor initial conditions */
+  enum possible_vector_background_modes vector_background_mode;
+  enum possible_svt_coupling svt_coupling;
   int vf_tuning_index;    /**< index in vf_parameters used for tuning */
-  double phi_ini_vf;      /**< \f$ \phi(t_0) \f$: scalar field initial value */
-  double phi_prime_ini_vf;/**< \f$ d\phi(t_0)/d\tau \f$: scalar field initial derivative wrt conformal time */
   int vf_parameters_size; /**< size of vf_parameters */
   double varconst_alpha; /**< finestructure constant for varying fundamental constants */
   double varconst_me; /**< electron mass for varying fundamental constants */
@@ -194,19 +183,12 @@ enum possible_vector_background_modes vector_background_mode;
   int index_bg_rho_dcdm;      /**< dcdm density */
   int index_bg_rho_dr;        /**< dr density */
 
-  int index_bg_phi_vf;       /**< scalar field value */
-  int index_bg_phi_prime_vf; /**< scalar field derivative wrt conformal time */
-  int index_bg_V_vf;         /**< scalar field potential V */
-  int index_bg_dV_vf;        /**< scalar field potential derivative V' */
-  int index_bg_ddV_vf;       /**< scalar field potential second derivative V'' */
-  int index_bg_rho_vf;       /**< scalar field energy density */
-  int index_bg_p_vf;         /**< scalar field pressure */
-  int index_bg_p_prime_vf;         /**< scalar field pressure */
-
-  //Mati: agrego estos tres
-  int index_bg_Omega_phi_vf;       /**< scalar field density parameter */
-  int index_bg_theta_phi_vf; /**< scalar field angular variable */
-  int index_bg_y_phi_vf;         /**< scalar field y_1 variable */
+  int index_bg_rho_vf;       /**< vector field energy density */
+  int index_bg_p_vf;         /**< vector field pressure */
+  int index_bg_p_prime_vf;   /**< vector field pressure derivative */
+  int index_bg_Omega_vf;     /**< vector field density parameter log(Omega_A) */
+  int index_bg_theta_vf;     /**< vector field angular variable */
+  int index_bg_y_vf;         /**< vector field y = m/(aH) variable */
 
   int index_bg_metric_shear;    /** metric_shear = \sigma_{\parallel} */
   int index_bg_metric_shear_prime;    /** metric_shear = \sigma_{\parallel}^{\prime} */
@@ -236,10 +218,7 @@ enum possible_vector_background_modes vector_background_mode;
 
   int index_bg_varc_alpha;    /**< value of fine structure constant in varying fundamental constants */
   int index_bg_varc_me;      /**< value of effective electron mass in varying fundamental constants */
-
-  //Mati: agrego este de abajo
   int index_bg_w_tot;         /**< Total EoS */
-
   int bg_size_short;  /**< size of background vector in the "short format" */
   int bg_size_normal; /**< size of background vector in the "normal format" */
   int bg_size;        /**< size of background vector in the "long format" */
@@ -287,13 +266,9 @@ enum possible_vector_background_modes vector_background_mode;
   int index_bi_rho_dcdm;/**< {B} dcdm density */
   int index_bi_rho_dr;  /**< {B} dr density */
   int index_bi_rho_fld; /**< {B} fluid density */
-  
-  //Mati: comento los proximos dos y agrego 3  
-  //int index_bi_phi_vf;       /**< {B} scalar field value */
-  //int index_bi_phi_prime_vf; /**< {B} scalar field derivative wrt conformal time */
-  int index_bi_Omega_phi_vf; /**< {B} scalar field density parameter */
-  int index_bi_theta_phi_vf;       /**< {B} scalar field angular variable */
-  int index_bi_y_phi_vf; /**< {B} scalar field y_1 */
+  int index_bi_Omega_vf; /**< {B} vector field density parameter log(Omega_A) */
+  int index_bi_theta_vf; /**< {B} vector field angular variable */
+  int index_bi_y_vf;     /**< {B} vector field y = m/(aH) */
 
   int index_bi_metric_shear; /** sigma_// */
 
@@ -322,8 +297,7 @@ enum possible_vector_background_modes vector_background_mode;
   short has_idm;       /**< presence of interacting dark matter with photons, baryons, and idr */
   short has_dcdm;      /**< presence of decaying cold dark matter? */
   short has_dr;        /**< presence of relativistic decay radiation? */
-  short has_vf;       /**< presence of a scalar field? */
-  short has_background_metric_shear; /**< Bianchi I in Einstein 0i Eq for VFDM */
+  short has_vf;        /**< presence of a vector field? */
   short has_ncdm;      /**< presence of non-cold dark matter? */
   short has_lambda;    /**< presence of cosmological constant? */
   short has_fld;       /**< presence of fluid with constant w and cs2? */
@@ -364,6 +338,7 @@ enum possible_vector_background_modes vector_background_mode;
 
   ErrorMsg error_message; /**< zone for writing error messages */
 
+  short is_allocated; /**< flag is set to true if allocated */
   //@}
 };
 
@@ -584,42 +559,16 @@ extern "C" {
   int background_output_budget(
                                struct background* pba
                                );
-  
-  
-  //Mati: comento las 4 funciones que vienen y agrego dos del seno y coseno.
-  /** Scalar field potential and its derivatives **/
-  /*
-  double V_vf(
-               struct background *pba,
-               double phi
-               );
 
-  double dV_vf(
-                struct background *pba,
-                double phi
-                );
-
-  double ddV_vf(
-                 struct background *pba,
-                 double phi
-                 );
-  */
-  /** Coupling between scalar field and matter **/
-  /*
-  double Q_vf(
-               struct background *pba,
-               double phi,
-               double phi_prime
-               );
-  */
-  /** Scalar field variables. See background.c for more details. */
+  /** Smoothed trig functions for vector field **/
   double cos_vf(struct background *pba,
-    	 double theta_phi
+    	 double theta_vf
 		 );
   
   double sin_vf(struct background *pba,
-		 double theta_phi
+		 double y_vf, double theta_vf
 		 );
+
 
 #ifdef __cplusplus
 }

@@ -105,7 +105,6 @@ struct fourier {
                           condition z(tau) < z_max_pk */
 
   int ln_tau_size;     /**< total number of values in this array */
-  int index_ln_tau_pk; /**< first index relevant for output of P(k,z) and T(k,z) */
 
   double ** ln_pk_ic_l;   /**< Matter power spectrum (linear).
                              Depends on indices index_pk, index_ic1_ic2, index_k, index_tau as:
@@ -192,6 +191,8 @@ struct fourier {
   short fourier_verbose;  	/**< amount of information written in standard output */
 
   ErrorMsg error_message; 	/**< zone for writing error messages */
+
+  short is_allocated; /**< flag is set to true if allocated */
 
   //@}
 };
@@ -355,6 +356,7 @@ extern "C" {
 
   int fourier_get_k_list(
                          struct precision *ppr,
+                         struct primordial *ppm,
                          struct perturbations * ppt,
                          struct fourier * pfo
                          );

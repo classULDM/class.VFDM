@@ -12,7 +12,7 @@ class_precision_parameter(a_ini_over_a_today_default,double,1.e-14)
 /**
  * Number of background integration steps that are stored in the output vector
  */
-class_precision_parameter(background_Nloga,int,3000)
+class_precision_parameter(background_Nloga,int,40000)
 /**
  * Evolver to be used for thermodynamics (rk, ndf15)
  */
@@ -21,7 +21,7 @@ class_type_parameter(background_evolver,int,enum evolver_type,ndf15)
  * Tolerance of the background integration, giving the allowed relative integration error.
  * (used by both evolvers)
  */
-class_precision_parameter(tol_background_integration,double,1.e-10)
+class_precision_parameter(tol_background_integration,double,1.e-12)
 /**
  * Only relevant for rk evolver: the default integration step is given
  * by this number multiplied by the timescale defined in
@@ -103,7 +103,6 @@ class_precision_parameter(M_nfsm_threshold,double,1.e4)
  * Currently unused parameter.
  */
 
-//class_precision_parameter(safe_phi_vf,double,0.0)
 /**
  * Big Bang Nucleosynthesis file path. The file specifies the predictions for
  * \f$ Y_\mathrm{He} \f$ for given \f$ \omega_b \f$ and \f$ N_\mathrm{eff} \f$.
@@ -247,7 +246,7 @@ class_precision_parameter(z_start_chi_approx,double,2.0e3) /**< Switching redshi
 
 class_precision_parameter(k_min_tau0,double,0.1) /**< number defining k_min for the computation of Cl's and P(k)'s (dimensionless): (k_min tau_0), usually chosen much smaller than one */
 
-class_precision_parameter(k_max_tau0_over_l_max,double,2.4) /**< number defining k_max for the computation of Cl's (dimensionless): (k_max tau_0)/l_max, usually chosen around two */
+class_precision_parameter(k_max_tau0_over_l_max,double,1.8) /**< number defining k_max for the computation of Cl's (dimensionless): (k_max tau_0)/l_max, usually chosen around two. In v3.2.2: lowered from 2.4 to 1.8, because the high value 2.4 was needed to keep CMB lensing accurate enough. With the new Limber scheme, this will be the case anyway, and k_max can be lowered in other observables in order to speed up the code. */
 class_precision_parameter(k_step_sub,double,0.05) /**< step in k space, in units of one period of acoustic oscillation at decoupling, for scales inside sound horizon at decoupling */
 class_precision_parameter(k_step_super,double,0.002) /**< step in k space, in units of one period of acoustic oscillation at decoupling, for scales above sound horizon at decoupling */
 class_precision_parameter(k_step_transition,double,0.2) /**< dimensionless number regulating the transition from 'sub' steps to 'super' steps. Decrease for more precision. */
@@ -265,7 +264,7 @@ class_precision_parameter(k_bao_width,double,4.0) /**< in ln(k) space, width of 
 
 class_precision_parameter(start_small_k_at_tau_c_over_tau_h,double,0.0015) /**< largest wavelengths start being sampled when universe is sufficiently opaque. This is quantified in terms of the ratio of thermo to hubble time scales, \f$ \tau_c/\tau_H \f$. Start when start_largek_at_tau_c_over_tau_h equals this ratio. Decrease this value to start integrating the wavenumbers earlier in time. */
 
-class_precision_parameter(start_large_k_at_tau_h_over_tau_k,double,0.05)//,0.07)  /**< largest wavelengths start being sampled when mode is sufficiently outside Hubble scale. This is quantified in terms of the ratio of hubble time scale to wavenumber time scale, \f$ \tau_h/\tau_k \f$ which is roughly equal to (k*tau). Start when this ratio equals start_large_k_at_tau_k_over_tau_h. Decrease this value to start integrating the wavenumbers earlier in time. */
+class_precision_parameter(start_large_k_at_tau_h_over_tau_k,double,0.07)  /**< largest wavelengths start being sampled when mode is sufficiently outside Hubble scale. This is quantified in terms of the ratio of hubble time scale to wavenumber time scale, \f$ \tau_h/\tau_k \f$ which is roughly equal to (k*tau). Start when this ratio equals start_large_k_at_tau_k_over_tau_h. Decrease this value to start integrating the wavenumbers earlier in time. */
 
 /**
  * when to switch off tight-coupling approximation: first condition:
@@ -320,16 +319,25 @@ class_precision_parameter(gw_ini,double,1.0)      /**< initial condition for ten
 /**
  * default step \f$ d \tau \f$ in perturbation integration, in units of the timescale involved in the equations (usually, the min of \f$ 1/k \f$, \f$ 1/aH \f$, \f$ 1/\dot{\kappa} \f$)
  */
-class_precision_parameter(perturbations_integration_stepsize,double,0.5)//0.5
+class_precision_parameter(perturbations_integration_stepsize,double,0.5)
 /**
  * default step \f$ d \tau \f$ for sampling the source function, in units of the timescale involved in the sources: \f$ (\dot{\kappa}- \ddot{\kappa}/\dot{\kappa})^{-1} \f$
  */
-class_precision_parameter(perturbations_sampling_stepsize,double,0.1) //default : 0.1
+class_precision_parameter(perturbations_sampling_stepsize,double,0.1)
+/**
+ * added in v 3.2.2: age fraction (between 0 and 1 ) such that, when
+ * tau > conformal_age * age_fraction, the time sampling of sources is
+ * twice finer, in order to boost the accuracy of the lensing
+ * line-of-sight integrals (for l < l_switch_limber) without changing
+ * that of unlensed CMB observables. Setting to 1.0 disables this
+ * functionality.
+*/
+class_precision_parameter(perturbations_sampling_boost_above_age_fraction, double, 0.9)
 /**
  * control parameter for the precision of the perturbation integration,
  * IMPORTANT FOR SETTING THE STEPSIZE OF NDF15
  */
-class_precision_parameter(tol_perturbations_integration,double,1.0e-5) // default: 1.0e-5 TOMI
+class_precision_parameter(tol_perturbations_integration,double,1.0e-5)
 /**
  * cutoff relevant for controlling stiffness in the PPF scheme. It is
  * neccessary for the Runge-Kutta evolver, but not for ndf15. However,
@@ -460,6 +468,9 @@ class_precision_parameter(q_numstep_transition,double,250.0) /**< number of step
                                  from q_logstep_trapzd steps to
                                  q_logstep_spline steps (transition
                                  must be smooth for spline) */
+
+class_precision_parameter(q_logstep_limber,double,1.025) /**< new in v3.2.2: in the new 'full limber' scheme, logarithmic step for the k-grid (and q-grid) */
+class_precision_parameter(k_max_limber_over_l_max_scalars,double,0.001) /**< new in v3.2.2: in the new 'full limber' scheme, the integral runs up to k_max = l_max_scalars times this parameter (units of 1/Mpc) */
 
 class_precision_parameter(transfer_neglect_delta_k_S_t0,double,0.15) /**< for temperature source function T0 of scalar mode, range of k values (in 1/Mpc) taken into account in transfer function: for l < (k-delta_k)*tau0, ie for k > (l/tau0 + delta_k), the transfer function is set to zero */
 class_precision_parameter(transfer_neglect_delta_k_S_t1,double,0.04) /**< same for temperature source function T1 of scalar mode */

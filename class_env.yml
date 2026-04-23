@@ -1,0 +1,33 @@
+name: class_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Python
+  - python=3.9
+
+  # Compilers (needed for CLASS)
+  - gcc
+  - gxx
+  - cython
+
+  # Scientific computing
+  - numpy
+  - scipy
+  - matplotlib
+
+  # Jupyter
+  - ipykernel
+  - ipython
+  - ipympl
+  - ipywidgets
+  - jupyter_client
+  - jupyter_core
+  - jupyterlab_widgets
+
+  # Other utilities
+  - pip
+
+  # pip packages
+  - pip:
+    - classy==3.2.5
