@@ -19,9 +19,9 @@ sector sourced by the anisotropic stress of the vector field.
 
 The physics, conventions and equations of motion follow the treatment presented in our companion paper:
 
-- T. Ferreira Chase, D. López Nacir; arxiv:2311.09373
-- T. Ferreira Chase, M. Leizerovich, D. López Nacir, S. Landau; arXiv:2408.12052.
-- T. Ferreira Chase, D. López Nacir; 
+- T. Ferreira Chase, D. López Nacir - arxiv:2311.09373
+- T. Ferreira Chase, M. Leizerovich, D. López Nacir, S. Landau - arXiv:2408.12052
+- T. Ferreira Chase, D. López Nacir - arxiv:2604.21080   
 
 Please cite arXiv:2408.12052 (in addition to the standard CLASS references) if you
 use this code in a publication.
