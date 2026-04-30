@@ -2956,9 +2956,8 @@ double sin_vf(struct background *pba,
               double y_vf,
               double theta_vf) {
 
-    double theta_thresh = 100. * _PI_;
-    double theta_thresh_II = 100.*_PI_;
+    double theta_thresh = 1.e2 * _PI_;
     double theta_tol = 0.1;
 
-  return 0.5*(1.-tanh(theta_tol*(theta_vf-theta_thresh)))*sin(theta_vf) - 0.*0.5*(1.+tanh(theta_tol*(theta_vf-theta_thresh_II)))/y_vf;
+  return 0.5*(1.-tanh(theta_tol*(theta_vf-theta_thresh)))*sin(theta_vf);
 }

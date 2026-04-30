@@ -29,6 +29,7 @@ Figures/*
 # ---- Docs built artefacts ----
 doc/manual/html/
 doc/manual/latex/
+docs/
 
 # ---- RealSpaceInterface cache ----
 RealSpaceInterface/cache/

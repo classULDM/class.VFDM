@@ -3157,7 +3157,7 @@ int perturbations_solve(
       /* also check that the vf is slowly-rolling */
       m_vf_over_H = 0.5*ppw->pvecback[pba->index_bg_y_vf];
       
-      if (m_vf_over_H > 1.e-4){
+      if (m_vf_over_H > 1.e-4){ // Tune this for running higher masses of the vf
       is_early_enough = _FALSE_;
       }
       }
@@ -5659,8 +5659,7 @@ int perturbations_initial_conditions(struct precision * ppr,
           ppw->pv->y[ppw->pv->index_pt_delta1L_vf] = - 4. * kappa_vf * dL;
 
           
-          ppw->pv->y[ppw->pv->index_pt_delta0T_vf] = -(dL/4. + h_plus_ini)*(-1-cos(theta_vf_bg) + (-1.+cos(theta_vf_bg))*omega_A)/(omega_A)
-                                                     - (-0.25*dL)*alphaR * ktau_two;
+          ppw->pv->y[ppw->pv->index_pt_delta0T_vf] = -(dL/4. + h_plus_ini)*(-1-cos(theta_vf_bg) + (-1.+cos(theta_vf_bg))*omega_A)/(omega_A);
           
           ppw->pv->y[ppw->pv->index_pt_delta1T_vf] = (dL/4. + h_plus_ini)*(-1.+omega_A)*sin(theta_vf_bg)/omega_A;
 
@@ -8358,12 +8357,6 @@ int perturbations_sources(
         kappa_vf = y[ppw->pv->index_pt_kappa_vf];
         omega_A = sqrt(1 + 4 * kappa_vf/y_vf);
         eta = y[ppw->pv->index_pt_eta];
-    
-        /*rho_plus_p_theta_vf = ppw->pvecback[pba->index_bg_rho_vf] * a*ppw->pvecback[pba->index_bg_H] * kappa_vf * y_vf * cos(pba->gamma_Ak)*cos(pba->gamma_Ak)
-                              * (-sin_vf(pba,ppw->pvecback[pba->index_bg_theta_vf]) * y[ppw->pv->index_pt_delta0L_vf] 
-                              + (1. - cos_vf(pba,ppw->pvecback[pba->index_bg_theta_vf])) * y[ppw->pv->index_pt_delta1L_vf])/(4.*kappa_vf + y_vf)
-                              + ppw->pvecback[pba->index_bg_rho_vf] * a*ppw->pvecback[pba->index_bg_H] *kappa_vf*sin(pba->gamma_Ak)*sin(pba->gamma_Ak)*
-                              ((1+cos_vf(pba,ppw->pvecback[pba->index_bg_theta_vf]))*delta1T_vf + sin_vf(pba,ppw->pvecback[pba->index_bg_theta_vf])*delta0T_vf);*/
 
         rho_plus_p_theta_vf =  ppw->pvecback[pba->index_bg_rho_vf]*((- pow(cos(pba->gamma_Ak), 2) * ppw->pvecback[pba->index_bg_H]*a * sin_vf(pba,y_vf,theta_vf_bg) * kappa_vf * y_vf)
                                 / (4. * kappa_vf + y_vf) * delta0L_vf
@@ -8375,8 +8368,6 @@ int perturbations_sources(
 
                               +  (1+cos_vf(pba,theta_vf_bg))
                                 * a*ppw->pvecback[pba->index_bg_H] * pow(sin(pba->gamma_Ak), 2) * kappa_vf * delta1T_vf);
-       
-        //_set_source_(ppt->index_tp_theta_vf) = rho_plus_p_theta_vf/(pvecback[pba->index_bg_rho_vf]+pvecback[pba->index_bg_p_vf]);
       }
 
       _set_source_(ppt->index_tp_theta_vf) = rho_plus_p_theta_vf/(pvecback[pba->index_bg_rho_vf]+pvecback[pba->index_bg_p_vf]);
