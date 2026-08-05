@@ -1232,15 +1232,9 @@ int input_get_guess(double *xguess,
        * dxdy[index_guess] = -0.5081*pow(ba.Omega0_vf,-9./7.)`;
        * Version 3: use attractor solution
        * */
-      /*if (ba.vf_tuning_index == 0){
-        xguess[index_guess] = sqrt(3.0/ba.Omega0_vf);
-        dxdy[index_guess] = -0.5*sqrt(3.0)*pow(ba.Omega0_vf,-1.5);
-      }
-      else{*/
         /* Default: take the passed value as xguess and set dxdy to 1. */
-        xguess[index_guess] = ba.vf_parameters[ba.vf_tuning_index];
+        xguess[index_guess] = ba.vf_shooting_parameter;
         dxdy[index_guess] = 1./ba.Omega0_vf;
-      //}
       break;
     case omega_ini_dcdm:
       Omega0_dcdmdr = 1./(ba.h*ba.h);
@@ -3320,36 +3314,49 @@ int input_read_parameters_species(struct file_content * pfc,
   /** 8.b) If Omega vector field (vf) is different from 0 */
   if (pba->Omega0_vf != 0.){
 
-    /** 8.b.1) Additional vf parameters */
-    /* Read */
-    class_call(parser_read_list_of_doubles(pfc,
-                                           "vf_parameters",
-                                           &(pba->vf_parameters_size),
-                                           &(pba->vf_parameters),
-                                           &flag1,
-                                           errmsg),
-               errmsg,errmsg);
-    class_call(parser_read_double(pfc,"ln10^{10}m_a",&param2,&flag2,errmsg),
-                errmsg,
-                errmsg);                
-    if (flag2 == _TRUE_){
-      pba->vf_parameters[0] = pow(10,param2);
+    /** 8.b.1) Vector field mass: mutually exclusive notations
+        - vf_mass        : linear, in eV
+        - ln10^{10}m_a   : log10(m_a/eV) */
+    {
+      double param_vf_mass = 0., param_legacy = 0.;
+      int flag_vf_mass = _FALSE_, flag_legacy = _FALSE_;
+      const double EV_TO_INV_MPC = 1.56373846613383e29;
+
+      class_call(parser_read_double(pfc,"vf_mass",&param_vf_mass,&flag_vf_mass,errmsg),
+                 errmsg,errmsg);
+      class_call(parser_read_double(pfc,"ln10^{10}m_a",&param_legacy,&flag_legacy,errmsg),
+                 errmsg,errmsg);
+
+      class_test((flag_vf_mass == _TRUE_) && (flag_legacy == _TRUE_),
+                 errmsg,
+                 "You can only set one of 'vf_mass' or 'ln10^{10}m_a'.");
+
+      if (flag_vf_mass == _TRUE_) {
+        pba->vf_mass = param_vf_mass * EV_TO_INV_MPC;
       }
+      else if (flag_legacy == _TRUE_) {
+        pba->vf_mass = pow(10., param_legacy) * EV_TO_INV_MPC;
+      }
+
+      class_test(pba->vf_mass <= 0.,
+                 errmsg,
+                 "Omega_vf is non-zero but no vector field mass was specified. Set 'vf_mass' (eV) or 'ln10^{10}m_a'.");
+    }
 
     class_call(parser_read_double(pfc,"gamma_Ak",&param2,&flag2,errmsg),
                 errmsg,
                 errmsg);
+    class_test(flag2 == _FALSE_,
+               errmsg,
+               "Omega_vf is non-zero but 'gamma_Ak' was not specified. "
+               "Set the angle between the vector field and k (e.g. gamma_Ak = 0).");
     if (flag2 == _TRUE_){
       pba->gamma_Ak = param2;
       }
 
-    class_read_int("vf_tuning_index",pba->vf_tuning_index);
-
-    class_test(pba->vf_tuning_index >= pba->vf_parameters_size,
-               errmsg,
-               "Tuning index 'vf_tuning_index' (%d) is larger than the number of entries (%d) in 'vf_parameters'.",
-               pba->vf_tuning_index,pba->vf_parameters_size);   
-    class_read_double("vf_shooting_parameter",pba->vf_parameters[pba->vf_tuning_index]);
+    class_read_double("vf_theta_ini",pba->vf_theta_ini);
+    class_read_double("vf_omega_ini_factor",pba->vf_omega_ini_factor);
+    class_read_double("vf_shooting_parameter",pba->vf_shooting_parameter);
     /** 8.b.2) SCF initial conditions from attractor solution */
     /* Read */
     class_call(parser_read_string(pfc,
@@ -3360,31 +3367,29 @@ int input_read_parameters_species(struct file_content * pfc,
                errmsg,
                errmsg);
     
+    /* Background geometry: FRW or Bianchi I */
 
-    /* Complete set of parameters */
-    if (flag1 == _TRUE_){
-      if (string_begins_with(string1,'y') || string_begins_with(string1,'Y')){
-        pba->attractor_ic_vf = _TRUE_;
+    class_call(parser_read_string(pfc,"vector_background_mode",&string5,&flag5,errmsg),
+          errmsg,
+          errmsg);
 
-        class_call(parser_read_string(pfc,"vector_background_mode",&string5,&flag5,errmsg),
-             errmsg,
-             errmsg);
+    if (flag5 == _TRUE_) {
 
-        if (flag5 == _TRUE_) {
+      if ((strstr(string5,"frw") != NULL) || (strstr(string5,"FRW") != NULL) || (strstr(string5,"Frw") != NULL)) {
+        pba->vector_background_mode = frw;
+      }
+      else if ((strstr(string5,"bianchi") != NULL) || (strstr(string5,"Bianchi") != NULL) || (strstr(string5,"bianchi1") != NULL)) {
+        pba->vector_background_mode = bianchi;
+      }
+      else{
+        class_stop(errmsg,
+                  "You have to pick one background geometry: bianchi1 or FRW");
+      }
+    }
 
-          if ((strstr(string5,"frw") != NULL) || (strstr(string5,"FRW") != NULL) || (strstr(string5,"Frw") != NULL)) {
-            pba->vector_background_mode = frw;
-          }
-          else if ((strstr(string5,"bianchi") != NULL) || (strstr(string5,"Bianchi") != NULL) || (strstr(string5,"bianchi1") != NULL)) {
-            pba->vector_background_mode = bianchi;
-          }
-          else{
-            class_stop(errmsg,
-                      "You have to pick one background geometry: bianchi1 or FRW");
-          }
-        }
+    /* SVT coupling */
 
-        class_call(parser_read_string(pfc,"svt_coupling",&string5,&flag5,errmsg),
+    class_call(parser_read_string(pfc,"svt_coupling",&string5,&flag5,errmsg),
             errmsg,
             errmsg);
 
@@ -3405,45 +3410,39 @@ int input_read_parameters_species(struct file_content * pfc,
           }
         }
 
-
+    /* Complete set of parameters */
+    if (flag1 == _TRUE_){
+      if (string_begins_with(string1,'y') || string_begins_with(string1,'Y')){
+        pba->attractor_ic_vf = _TRUE_;
 
       double a_ini=0, a2_ini=0;
-      double Omega_rad_ini=0., Omega_A_osc = 0, log_Omega_A_ini_II = 0, H_ini = 0, H_conf_ini = 0, m_in_Mpc=0, m_in_Mpc_a2_ini=0;
+      double Omega_A_osc = 0, log_Omega_A_ini_II = 0, H_conf_ini = 0;
 
        a_ini = ppr->a_ini_over_a_today_default;//1.e-14;
        a2_ini = ppr->a_ini_over_a_today_default * ppr->a_ini_over_a_today_default;
-       H_ini = pow(pba->Omega0_g+pba->Omega0_ur,0.5)*pba->H0/a2_ini; // Cosmic Hubble
        H_conf_ini = pow(pba->Omega0_g+pba->Omega0_ur,0.5)*pba->H0/a_ini;
-       m_in_Mpc = pba->vf_parameters[0]*1.56373846613383*1.e29;
-       m_in_Mpc_a2_ini = m_in_Mpc*a2_ini;//pba->vf_parameters[0]*15.64;
 
       /* Unit conversion factors (eV->Mpc and a_ini from H) cancel out */
-      pba->y_ini_vf = 2.* m_in_Mpc_a2_ini/(pow(pba->Omega0_g+pba->Omega0_ur,0.5)*pba->H0);
+      pba->y_ini_vf = 2.* pba->vf_mass * a2_ini/(pow(pba->Omega0_g+pba->Omega0_ur,0.5)*pba->H0);
 
       theta_ini = pba->y_ini_vf*(1 - pba->y_ini_vf*pba->y_ini_vf/66.);
-      aosc = pow(pow(pba->Omega0_g+pba->Omega0_ur,0.5)*pba->H0/m_in_Mpc, 0.5);
-                
+      aosc = pow(pow(pba->Omega0_g+pba->Omega0_ur,0.5)*pba->H0/pba->vf_mass, 0.5);
+
       Omega_A_osc = pba->Omega0_vf/(pba->Omega0_g+pba->Omega0_ur) * aosc;
 
-      //Omega_rad_ini = (pba->Omega0_g+pba->Omega0_ur)*(a2_ini*a2_ini)/((H_ini/pba->H0)*(H_ini/pba->H0)); 
-      
       metric_shear_ini = -4.* Omega_A_osc * H_conf_ini;
 
       log_Omega_A_ini_II = 1./32. * pba->y_ini_vf *pba->y_ini_vf;
 
       // - Set up initial conditions
       pba->theta_ini_vf = theta_ini;
-      pba->Omega_ini_vf = pba->vf_parameters[pba->vf_tuning_index] + log(Omega_A_osc) + log_Omega_A_ini_II;
+      pba->Omega_ini_vf = pba->vf_shooting_parameter + log(Omega_A_osc) + log_Omega_A_ini_II;
       pba->metric_shear_ini = metric_shear_ini;
       }
       else {
         pba->attractor_ic_vf = _FALSE_;
-        /* Test */
-        class_test(pba->vf_parameters_size<2,
-                   errmsg,
-                   "Since you are not using attractor initial conditions, you must specify phi and its derivative phi' as the last two entries in vf_parameters. See explanatory.ini for more details.");
-        pba->theta_ini_vf = pba->vf_parameters[1];
-        pba->Omega_ini_vf = pba->vf_parameters[pba->vf_tuning_index]+log(pba->vf_parameters[2]);
+        pba->theta_ini_vf = pba->vf_theta_ini;
+        pba->Omega_ini_vf = pba->vf_shooting_parameter + log(pba->vf_omega_ini_factor);
 
       }
     }
@@ -5947,17 +5946,21 @@ int input_default_params(struct background *pba,
   pba->wa_fld = 0.;
   /** 9.a.2.2) 'EDE' case */
   pba->Omega_EDE = 0.;
-  /** 9.b) Omega scalar field */
-  /** 9.b.1) Potential parameters and initial conditions */
-  pba->vf_parameters = NULL;
-  pba->vf_parameters_size = 0;
+
+
+  /** 9.b) Omega vector field */
+  /** 9.b.1) Vector field parameters (sentinel mass = 0; user must set if Omega0_vf != 0) */
+  pba->vf_mass = 0.;
+  pba->vf_theta_ini = 1.e-16;
+  pba->vf_omega_ini_factor = 1.e-30;
+  pba->vf_shooting_parameter = 0.01;
   /** 9.b.2) Initial conditions from attractor solution */
   pba->attractor_ic_vf = _TRUE_;
   pba->Omega_ini_vf = 0.;
   pba->theta_ini_vf = 0.;
   pba->y_ini_vf = 0.;
-  /** 9.b.3) Tuning parameter */
-  pba->vf_tuning_index = 3;
+  pba->metric_shear_ini = 0.;         
+  pba->vector_background_mode = frw;  
   pba->svt_coupling = no;
 
   /**

@@ -3157,7 +3157,7 @@ int perturbations_solve(
       /* also check that the vf is slowly-rolling */
       m_vf_over_H = 0.5*ppw->pvecback[pba->index_bg_y_vf];
       
-      if (m_vf_over_H > 1.e-4){ // Tune this for running higher masses of the vf
+      if (m_vf_over_H > 1.e-3){ // Tune this for running higher masses of the vf
       is_early_enough = _FALSE_;
       }
       }
@@ -5654,7 +5654,7 @@ int perturbations_initial_conditions(struct precision * ppr,
         }
         
           ppw->pv->y[ppw->pv->index_pt_delta0L_vf] = (1. + 4.*kappa_vf/y_vf + 2. * kappa_vf2 - kappa_vf * y_vf) * dL
-                                                      - 2. *(-0.25*dL)*alphaR * ktau_two; 
+                                                     - 2. *(-0.25*dL)*alphaR * ktau_two; 
                                                      
           ppw->pv->y[ppw->pv->index_pt_delta1L_vf] = - 4. * kappa_vf * dL;
 
@@ -6781,9 +6781,9 @@ int perturbations_einstein(
       H_conf_prime = H_conf*H_conf + a * ppw->pvecback[pba->index_bg_H_prime];
       sigma_parallel = 3./2. * (cos(pba->gamma_Ak)*cos(pba->gamma_Ak)-1./3.)* metric_shear;
       sigma_parallel_prime = 3./2. * (cos(pba->gamma_Ak)*cos(pba->gamma_Ak)-1./3.)* metric_shear_prime;
-      //bianchi_term = - ((H_conf_prime/(H_conf*H_conf) - 3)*sigma_parallel - sigma_parallel_prime/H_conf) * y[ppw->pv->index_pt_eta];
+      //bianchi_term = -1./2. * ((H_conf_prime/(H_conf*H_conf) - 3)*sigma_parallel - sigma_parallel_prime/H_conf) * y[ppw->pv->index_pt_eta];
       bianchi_term = 3./2. *  sigma_parallel * y[ppw->pv->index_pt_eta];
-
+     
       if (pba->svt_coupling == yes){
 
       sigma_plus = 3./4. * sin(pba->gamma_Ak)*sin(pba->gamma_Ak) * metric_shear;
@@ -8150,7 +8150,7 @@ int perturbations_sources(
 
     /* delta_g */
     if (ppt->has_source_delta_g == _TRUE_)  {
-      _set_source_(ppt->index_tp_delta_g) = delta_g
+      _set_source_(ppt->index_tp_delta_g) = delta_g 
         + 4.*a_prime_over_a*theta_over_k2; // N-body gauge correction
     }
 
@@ -10000,7 +10000,7 @@ int perturbations_derivs(double tau,
                                       - metric_continuity * sin_vf(pba,y_vf,theta_vf_bg)
                                       - 4.* sin_vf(pba,y_vf,theta_vf_bg)* eta_prime; //metric_continuity = h'/2
     
-        /*dy[pv->index_pt_delta0T_vf] = a_prime_over_a * ((1. / (4. * omega_A * omega_A * y_vf)) *
+        dy[pv->index_pt_delta0T_vf] = a_prime_over_a * ((1. / (4. * omega_A * omega_A * y_vf)) *
                                       (sin_vf(pba,y_vf,theta_vf_bg) * omega_A * (-1. + omega_A * omega_A) * y_vf * y_vf
                                       + kappa_vf * (8. + 8. * cos_vf(pba, theta_vf_bg) - 4. * sin_vf(pba,y_vf,theta_vf_bg) * omega_A * y_vf)) * delta0T_vf
                                       + 1./4. * (4. * sin_vf(pba,y_vf,theta_vf_bg) - 8. * sin_vf(pba,y_vf,theta_vf_bg) * kappa_vf / (omega_A * omega_A * y_vf)
@@ -10017,60 +10017,28 @@ int perturbations_derivs(double tau,
                                       + 4. * sin_vf(pba,y_vf,theta_vf_bg) * omega_A * y_vf) + omega_A * y_vf * (4. * cos_vf(pba, theta_vf_bg) * omega_A
                                       - sin_vf(pba,y_vf,theta_vf_bg) * (-1. + omega_A * omega_A) * y_vf))) * delta1T_vf)
                                       + sin_vf(pba,y_vf,theta_vf_bg)/(2. * omega_A) * (2.*metric_continuity + 4. * eta_prime)
-                                      - 2. * sin_vf(pba,y_vf,theta_vf_bg) * h_pert_dot / omega_A;*/
-        double cth = cos_vf(pba, theta_vf_bg);
-        double sth = sin_vf(pba, y_vf, theta_vf_bg);
+                                      - 2. * sin_vf(pba,y_vf,theta_vf_bg) * h_pert_dot / omega_A;
+        
+        dy[pv->index_pt_delta0T2_vf] = a_prime_over_a*((8.*kappa_vf*(1. + cos_vf(pba,theta_vf_bg))
+                                      + sin_vf(pba,y_vf,theta_vf_bg)*y_vf*omega_A*(y_vf*(omega_A*omega_A - 1.)
+                                      - 4.*kappa_vf))/(4.*y_vf*omega_A*omega_A) * delta0T2_vf
+                                      + (-4.*kappa_vf*(2.*sin_vf(pba,y_vf,theta_vf_bg)
+                                      + (1. + cos_vf(pba,theta_vf_bg))*y_vf*omega_A)
+                                      + y_vf*omega_A*(4.*sin_vf(pba,y_vf,theta_vf_bg)*omega_A
+                                      + y_vf*(omega_A - 1.)*(1. + cos_vf(pba,theta_vf_bg)
+                                      + (cos_vf(pba,theta_vf_bg) - 1.)*omega_A)))/(4.*y_vf*omega_A*omega_A) * delta1T2_vf)
+                                      + 2.*(1. + cos_vf(pba,theta_vf_bg))/omega_A * h_cross_dot;
 
-        double pref = 1.0 / (4.0 * y_vf * omega_A * omega_A);
+        dy[pv->index_pt_delta1T2_vf] = a_prime_over_a*((-4.*kappa_vf*(2.*sin_vf(pba,y_vf,theta_vf_bg)
+                                      + (cos_vf(pba,theta_vf_bg) - 1.)*y_vf*omega_A)
+                                      + y_vf*y_vf*(omega_A - 1.)*omega_A*((omega_A - 1.)
+                                      + cos_vf(pba,theta_vf_bg)*(1. + omega_A)))/(4.*y_vf*omega_A*omega_A) * delta0T2_vf
+                                      + (8.*kappa_vf*(1. - cos_vf(pba,theta_vf_bg))
+                                      + 4.*kappa_vf*sin_vf(pba,y_vf,theta_vf_bg)*y_vf*omega_A
+                                      + y_vf*omega_A*(4.*cos_vf(pba,theta_vf_bg)*omega_A
+                                      - sin_vf(pba,y_vf,theta_vf_bg)*y_vf*(omega_A*omega_A - 1.)))/(4.*y_vf*omega_A*omega_A) * delta1T2_vf)
+                                      - 2.*sin_vf(pba,y_vf,theta_vf_bg)/omega_A * h_cross_dot;
 
-        dy[pv->index_pt_delta0T_vf] = a_prime_over_a * (pref * delta1T_vf * (
-                              -4.0 * kappa_vf * (2.0 * sth + (1.0 + cth) * y_vf * omega_A)
-                              + y_vf * omega_A * (4.0 * sth * omega_A + y_vf * (-1.0 + omega_A) * (1.0 + cth + (-1.0 + cth) * omega_A)))
-
-                      + pref * delta0T_vf * ( 8.0 * kappa_vf + 8.0 * cth * kappa_vf + sth * y_vf * omega_A * (
-                          -4.0 * kappa_vf + y_vf * (-1.0 + omega_A * omega_A) ) ))
-
-              - (1.0 + cth) / (omega_A) * metric_continuity
-              - 2.0 * (1.0 + cth) / omega_A * eta_prime
-              + 2.0 * (1.0 + cth) / omega_A * h_plus_dot;
-
-        dy[pv->index_pt_delta1T_vf] = a_prime_over_a * (pref * delta0T_vf * (
-                    -4.0 * kappa_vf * (2.0 * sth + (-1.0 + cth) * y_vf * omega_A)
-                    + y_vf * y_vf * (-1.0 + omega_A) * omega_A
-                      * (-1.0 + omega_A + cth * (1.0 + omega_A)))
-
-              + pref * delta1T_vf * (
-                    kappa_vf * (8.0 - 8.0 * cth + 4.0 * sth * y_vf * omega_A)
-                    + y_vf * omega_A * (
-                        4.0 * cth * omega_A
-                        - sth * y_vf * (-1.0 + omega_A * omega_A))))
-
-              + sth / (omega_A) * metric_continuity
-              + 2.0 * sth / omega_A * eta_prime
-              - 2.0 * sth / omega_A * h_plus_dot;
-
-        /* Second transverse polarization: equations of motion (coupled to hx) */
-        dy[pv->index_pt_delta0T2_vf] = a_prime_over_a * (pref * delta1T2_vf * (
-                              -4.0 * kappa_vf * (2.0 * sth + (1.0 + cth) * y_vf * omega_A)
-                              + y_vf * omega_A * (4.0 * sth * omega_A + y_vf * (-1.0 + omega_A) * (1.0 + cth + (-1.0 + cth) * omega_A)))
-
-                      + pref * delta0T2_vf * ( 8.0 * kappa_vf + 8.0 * cth * kappa_vf + sth * y_vf * omega_A * (
-                          -4.0 * kappa_vf + y_vf * (-1.0 + omega_A * omega_A) ) ))
-
-              + 2.0 * (1.0 + cth) / omega_A * h_cross_dot;
-
-        dy[pv->index_pt_delta1T2_vf] = a_prime_over_a * (pref * delta0T2_vf * (
-                    -4.0 * kappa_vf * (2.0 * sth + (-1.0 + cth) * y_vf * omega_A)
-                    + y_vf * y_vf * (-1.0 + omega_A) * omega_A
-                      * (-1.0 + omega_A + cth * (1.0 + omega_A)))
-
-              + pref * delta1T2_vf * (
-                    kappa_vf * (8.0 - 8.0 * cth + 4.0 * sth * y_vf * omega_A)
-                    + y_vf * omega_A * (
-                        4.0 * cth * omega_A
-                        - sth * y_vf * (-1.0 + omega_A * omega_A))))
-
-              - 2.0 * sth / omega_A * h_cross_dot;
     }
     }
 

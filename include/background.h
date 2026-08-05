@@ -122,12 +122,13 @@ struct background
   double cs2_fld;  /**< \f$ c^2_{s~DE} \f$: sound speed of the fluid in the frame comoving with the fluid (so, this is
                       not [delta p/delta rho] in the synchronous or newtonian gauge!) */
   double Omega_EDE;        /**< \f$ wa_{DE} \f$: Early Dark Energy density parameter */
-  double * vf_parameters; /**< list of parameters describing the vector field [m_a, theta_ini, Omega_ini_factor] */
+  double vf_mass;               /**< vector field mass [1/Mpc], converted from user input in eV */
+  double vf_theta_ini;          /**< initial field angle (used only when attractor_ic_vf=no) */
+  double vf_omega_ini_factor;   /**< initial Omega_A factor (used only when attractor_ic_vf=no) */
+  double vf_shooting_parameter; /**< log-space offset added to log(Omega_A_osc) for IC tuning */
   short attractor_ic_vf;  /**< whether the vector field has attractor initial conditions */
   enum possible_vector_background_modes vector_background_mode;
   enum possible_svt_coupling svt_coupling;
-  int vf_tuning_index;    /**< index in vf_parameters used for tuning */
-  int vf_parameters_size; /**< size of vf_parameters */
   double varconst_alpha; /**< finestructure constant for varying fundamental constants */
   double varconst_me; /**< electron mass for varying fundamental constants */
   enum varconst_dependence varconst_dep; /**< dependence of the varying fundamental constants as a function of time */

@@ -286,6 +286,22 @@ cdef extern from "class.h":
     cdef struct transfer:
         short is_allocated
         ErrorMsg error_message
+        short has_cls
+        int md_size
+        int * tt_size
+        int * l_size
+        int l_size_max
+        int * l
+        int q_size
+        double * q
+        double ** k
+        double ** transfer
+        int index_tt_t0
+        int index_tt_t1
+        int index_tt_t2
+        int index_tt_e
+        int index_tt_b
+        int index_tt_lcmb
 
     cdef struct primordial:
         short is_allocated

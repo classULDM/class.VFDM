@@ -2609,6 +2609,149 @@ cdef class Class:
 
         return {'k (h/Mpc)': k_arr, 'h_t': h_arr, 'dh_t': hdot_arr}
 
+    def get_cmb_transfer(self, k=None, types=None):
+        """
+        Return the CMB harmonic-space transfer functions Delta_l(k) (a.k.a.
+        Theta_l in Seljak-Zaldarriaga line-of-sight notation), i.e. the
+        result of the Bessel-weighted integral
+
+            Delta_l(k) = integral d eta  S(eta, k)  j_l(k (eta_0 - eta))
+
+        BEFORE the convolution with the primordial power spectrum.
+
+        Requires the transfer module to have run, i.e. 'output' must include
+        at least one CMB Cl flag (e.g. 'tCl', 'pCl', 'lCl').
+
+        Parameters
+        ----------
+        k : None, 'k_output_values', or array-like, optional
+            * None (default): return the transfer functions on the native
+              CLASS q-grid (optimised for Bessel sampling).
+            * 'k_output_values': spline-interpolate onto the user-specified
+              `k_output_values` (same convention as get_perturbations).
+            * array-like: spline-interpolate onto the given k values [1/Mpc].
+        types : list of str, optional
+            Which transfer types to return. Choices: 'T', 'E', 'B', 'phi'.
+            Defaults to all available given the run configuration.
+
+        Returns
+        -------
+        dict with keys:
+            'l'  : 1D int array of multipoles
+            'k'  : 1D float array of wavenumbers [1/Mpc]
+            'T'  : 2D array (n_l, n_k) of temperature transfer
+                   (= Delta^T_t0 + Delta^T_t1 + Delta^T_t2)
+            'E'  : E-polarization (if available)
+            'B'  : B-polarization (if available)
+            'phi': CMB lensing potential (if available)
+        """
+        self.compute(["transfer"])
+
+        if self.tr.has_cls == _FALSE_:
+            raise CosmoSevereError(
+                "CMB transfer functions not computed. Add 'tCl' (and/or "
+                "'pCl', 'lCl') to the 'output' parameter.")
+
+        cdef int index_md = self.pt.index_md_scalars
+        cdef int index_ic = 0  # adiabatic only; isocurvature not handled here
+        cdef int tt_size = self.tr.tt_size[index_md]
+        cdef int l_size  = self.tr.l_size[index_md]
+        cdef int q_size  = self.tr.q_size
+        cdef int i_l, i_q
+        cdef Py_ssize_t base_T0, base_T1, base_T2, base_E, base_B, base_P
+
+        # Resolve which types are available / requested
+        cdef bint want_T   = (self.hr.has_tt == _TRUE_)
+        cdef bint want_E   = (self.hr.has_ee == _TRUE_) or (self.hr.has_te == _TRUE_)
+        cdef bint want_B   = (self.hr.has_bb == _TRUE_)
+        cdef bint want_phi = (self.hr.has_pp == _TRUE_)
+
+        if types is not None:
+            req = set(types)
+            want_T   = want_T   and ('T'   in req)
+            want_E   = want_E   and ('E'   in req)
+            want_B   = want_B   and ('B'   in req)
+            want_phi = want_phi and ('phi' in req)
+
+        # Native l and k grids
+        l_arr = np.zeros(l_size, dtype=np.int32)
+        for i_l in range(l_size):
+            l_arr[i_l] = self.tr.l[i_l]
+
+        k_native = np.zeros(q_size, dtype=np.double)
+        for i_q in range(q_size):
+            k_native[i_q] = self.tr.k[index_md][i_q]
+
+        # Allocate output 2D arrays on native grid
+        cdef np.ndarray[DTYPE_t, ndim=2] T_native, E_native, B_native, P_native
+        if want_T:   T_native = np.zeros((l_size, q_size), dtype=np.double)
+        if want_E:   E_native = np.zeros((l_size, q_size), dtype=np.double)
+        if want_B:   B_native = np.zeros((l_size, q_size), dtype=np.double)
+        if want_phi: P_native = np.zeros((l_size, q_size), dtype=np.double)
+
+        # Stride helper: ((ic * tt_size + tt) * l_size + l) * q_size + q
+        cdef Py_ssize_t ic_stride = <Py_ssize_t> tt_size * l_size * q_size
+        cdef Py_ssize_t base_ic   = <Py_ssize_t> index_ic * ic_stride
+
+        for i_l in range(l_size):
+            if want_T:
+                base_T0 = base_ic + (<Py_ssize_t>self.tr.index_tt_t0 * l_size + i_l) * q_size
+                base_T1 = base_ic + (<Py_ssize_t>self.tr.index_tt_t1 * l_size + i_l) * q_size
+                base_T2 = base_ic + (<Py_ssize_t>self.tr.index_tt_t2 * l_size + i_l) * q_size
+                for i_q in range(q_size):
+                    T_native[i_l, i_q] = (
+                        self.tr.transfer[index_md][base_T0 + i_q]
+                        + self.tr.transfer[index_md][base_T1 + i_q]
+                        + self.tr.transfer[index_md][base_T2 + i_q])
+            if want_E:
+                base_E = base_ic + (<Py_ssize_t>self.tr.index_tt_e * l_size + i_l) * q_size
+                for i_q in range(q_size):
+                    E_native[i_l, i_q] = self.tr.transfer[index_md][base_E + i_q]
+            if want_B:
+                base_B = base_ic + (<Py_ssize_t>self.tr.index_tt_b * l_size + i_l) * q_size
+                for i_q in range(q_size):
+                    B_native[i_l, i_q] = self.tr.transfer[index_md][base_B + i_q]
+            if want_phi:
+                base_P = base_ic + (<Py_ssize_t>self.tr.index_tt_lcmb * l_size + i_l) * q_size
+                for i_q in range(q_size):
+                    P_native[i_l, i_q] = self.tr.transfer[index_md][base_P + i_q]
+
+        # Resolve requested k grid
+        if k is None:
+            k_out = k_native
+        elif isinstance(k, str) and k == 'k_output_values':
+            if self.pt.k_output_values_num < 1:
+                raise CosmoSevereError(
+                    "k='k_output_values' requested but 'k_output_values' was not set.")
+            k_out = np.array([self.pt.k_output_values[i]
+                              for i in range(self.pt.k_output_values_num)], dtype=np.double)
+        else:
+            k_out = np.atleast_1d(np.asarray(k, dtype=np.double))
+
+        out = {'l': l_arr, 'k': np.asarray(k_out, dtype=np.double)}
+
+        if k is None:
+            if want_T:   out['T']   = T_native
+            if want_E:   out['E']   = E_native
+            if want_B:   out['B']   = B_native
+            if want_phi: out['phi'] = P_native
+            return out
+
+        # Spline-interpolate Delta_l(k_native) -> Delta_l(k_out) for each l
+        def _interp(arr_native):
+            arr_out = np.zeros((l_size, k_out.size), dtype=np.double)
+            for i in range(l_size):
+                arr_out[i, :] = CubicSpline(k_native, arr_native[i, :],
+                                            extrapolate=False)(k_out)
+            return arr_out
+
+        if want_T:   out['T']   = _interp(T_native)
+        if want_E:   out['E']   = _interp(E_native)
+        if want_B:   out['B']   = _interp(B_native)
+        if want_phi: out['phi'] = _interp(P_native)
+
+        return out
+
     def get_current_derived_parameters(self, names):
         """
         get_current_derived_parameters(names)

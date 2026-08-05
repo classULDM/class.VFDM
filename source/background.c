@@ -586,8 +586,6 @@ int background_functions(
 
   pvecback[pba->index_bg_H] = sqrt(3./2. * metric_shear*metric_shear/(6.*a*a) + rho_tot-pba->K/a/a);
 
-  //double m_in_Mpc=0.;
-  //m_in_Mpc = pba->vf_parameters[0]*1.56373846613383*1.e29;
   /** - compute derivative of sigma_A with respect to conformal time */
   pvecback[pba->index_bg_metric_shear_prime] = - 2. * a*pvecback[pba->index_bg_H]* metric_shear - 12.* a*a * pvecback[pba->index_bg_p_vf];//- 8.* a*pvecback[pba->index_bg_H]* m_in_Mpc*a/y_vf * cos_vf(pba,theta_vf) * exp(Omega_vf);//
   
@@ -977,10 +975,6 @@ int background_free_input(
       free(pba->ncdm_psd_parameters);
   }
 
-  if (pba->Omega0_vf != 0.) {
-    if (pba->vf_parameters != NULL)
-      free(pba->vf_parameters);
-  }
   return _SUCCESS_;
 }
 
@@ -1065,7 +1059,6 @@ int background_indices(
   /* - indices for H and its conformal-time-derivative */
   class_define_index(pba->index_bg_H,_TRUE_,index_bg,1);
   class_define_index(pba->index_bg_H_prime,_TRUE_,index_bg,1);
-  //Tomi
   class_define_index(pba->index_bg_w_tot,_TRUE_,index_bg,1);
 
   /* - end of indices in the short vector of background values */
@@ -1935,7 +1928,7 @@ int background_solve(
   /* growth factor today */
   double D_today;
   /* indices for the different arrays */
-  int index_loga, index_vf;
+  int index_loga;
   /* what parameters are used in the output? */
   int * used_in_output;
 
@@ -2099,7 +2092,6 @@ int background_solve(
     printf(" -> conformal age = %f Mpc\n",pba->conformal_age);
     printf(" -> N_eff = %g (summed over all species that are non-relativistic at early times) \n",pba->Neff);
     
-    // Tomi
   if (pba->has_vf == _TRUE_){
       printf(" Scalar field details:\n");
       printf(" -> Omega_vf = %g, wished = %g\n",
@@ -2107,8 +2099,8 @@ int background_solve(
       printf(" -> Mass_vf = %5.4e [eV], %5.4e [1/Mpc], %5.4e [H_0]\n",
              3.19696e-30*pvecback[pba->index_bg_y_vf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_vf]*pvecback[pba->index_bg_H], 0.5*pvecback[pba->index_bg_y_vf]);
       printf(" -> wished = %1.2e [eV]\n",
-             pba->vf_parameters[0]);
-    }  
+             pba->vf_mass / 1.56373846613383e29);
+    }
   }
 
   if (pba->background_verbose > 2) {
@@ -2128,12 +2120,10 @@ int background_solve(
         printf("     -> Omega_Lambda = %g, wished %g\n",
                pba->background_table[(pba->bt_size-1)*pba->bg_size+pba->index_bg_rho_lambda]/pba->background_table[(pba->bt_size-1)*pba->bg_size+pba->index_bg_rho_crit], pba->Omega0_lambda);
       }
-      printf("     -> parameters: [m_a, theta_ini, Omega_ini_factor] = \n");
-      printf("                    [");
-      for (index_vf=0; index_vf<pba->vf_parameters_size-1; index_vf++) {
-        printf("%.3f, ",pba->vf_parameters[index_vf]);
-      }
-      printf("%.3f]\n",pba->vf_parameters[pba->vf_parameters_size-1]);
+      printf("     -> vf_mass               = %.3e [eV]\n", pba->vf_mass / 1.56373846613383e29);
+      printf("     -> vf_theta_ini          = %.3e\n",      pba->vf_theta_ini);
+      printf("     -> vf_omega_ini_factor   = %.3e\n",      pba->vf_omega_ini_factor);
+      printf("     -> vf_shooting_parameter = %.3e\n",      pba->vf_shooting_parameter);
     }
   }
 
@@ -2687,9 +2677,6 @@ int background_derivs(
   }
 
   if (pba->has_vf == _TRUE_) {
-
-    //double m_in_Mpc=0.;
-    //m_in_Mpc = pba->vf_parameters[0]*1.56373846613383*1.e29;
 
     dy[pba->index_bi_Omega_vf] = 3.*(pvecback[pba->index_bg_w_tot] - 1./3. * cos_vf(pba,y[pba->index_bi_theta_vf]));
       

@@ -2,9 +2,9 @@
 CLASS.VFDM: Cosmic Linear Anisotropy Solving System for an Ultralight Vector Field Dark Matter model
 ==============================================
 
-Authors: Tomás Ferreira Chase
+Author: Tomás Ferreira Chase
 
-In collaboration with M. Leizerovich, D. López Nacir, S. Landau.
+In collaboration with M. Leizerovich, D. López Nacir, S. Landau, G. Ahumada Acuña.
 
 Overview
 --------
@@ -19,9 +19,10 @@ sector sourced by the anisotropic stress of the vector field.
 
 The physics, conventions and equations of motion follow the treatment presented in our companion paper:
 
-- T. Ferreira Chase, D. López Nacir - arxiv:2311.09373
+- T. Ferreira Chase, D. López Nacir - arXiv:2311.09373
 - T. Ferreira Chase, M. Leizerovich, D. López Nacir, S. Landau - arXiv:2408.12052
-- T. Ferreira Chase, D. López Nacir - arxiv:2604.21080   
+- T. Ferreira Chase, D. López Nacir - arXiv:2604.21080   
+- G. Ahumada Acuña, T. Ferreira Chase, D. López Nacir, Rafael C. Nunes - arXiv:2608.00331
 
 Please cite arXiv:2408.12052 (in addition to the standard CLASS references) if you
 use this code in a publication.
@@ -44,10 +45,8 @@ CLASS ones. The most relevant ones are:
 - `Omega_vf`         : present-day density fraction of the vector field.
                        Replaces (fully or partially) `Omega_cdm`. The budget
                        equation is closed automatically by shooting.
-- `vf_parameters`    : comma-separated list. The first entry is the vector
-                       field mass in eV (e.g. `1.e-22`). The remaining entries
-                       are used by the shooting / initial-condition machinery.
-                       Example: `vf_parameters = 1.e-22, 1.e-16, 1.e-30, 0.01`.
+- `vf_mass`    :       Vector field mass in eV (e.g. `1.e-22`). 
+
 - `vector_background_mode` : `frw` or `bianchi`. Selects whether the
                              background is assumed isotropic (FRW) or of
                              Bianchi-I type, the latter being the physically
@@ -67,15 +66,16 @@ as well as further diagnostics.
 
 Notebooks provided:
 
-- `Background.ipynb`              — background evolution of the Proca field.
-- `one_k.ipynb`                   — scalar perturbations at a single `k`.
-- `one_k_tensor.ipynb`            — tensor perturbations and GW sourcing.
-- `one_k_gamma_sweep.ipynb`       — dependence of perturbations on `gamma_Ak`.
-- `Pk_parametrization.ipynb`,     — matter power spectrum parameterization.
-  `Pk_theta_sweep.ipynb`,         — dependence of matter power spectrum on `gamma_Ak`.
-  `Pk_errors.ipynb`               — comparison of matter power spectrum with LCDM and a scalar field model.
-- `Tensor_power_spectrum.ipynb`   — tensor power spectrum.
+- `Background.ipynb`                  — background evolution of the Proca field.
+- `one_k.ipynb`                       — scalar perturbations at a single `k`.
+- `one_k_tensor.ipynb`                — tensor perturbations and GW sourcing.
+- `one_k_gamma_sweep.ipynb`           — dependence of perturbations on `gamma_Ak`.
+- `Pk_parametrization.ipynb`,         — dependence of matter power spectrum on `gamma_Ak`.
+- `Pk_errors.ipynb`                   — comparison of matter power spectrum with LCDM and a scalar field model.
+- `Tensor_power_spectrum.ipynb`       — tensor power spectrum.
 - `Velocity_invariant_transfer.ipynb` — velocity-invariant transfer function.
+- `Fisher_diag_anisotropies.ipynb`    — Fisher analysis for anisotropic diagonal terms in CMB.
+- `CMB_off_diagonal.ipynb`            — BipoSH power spectrum.
 
 The file class_env.yml lists the minimum requirements to create a conda environment for running CLASS.VFDM and the companion notebooks (tested on Ubuntu). Create it with conda env create -f class_env.yml and activate with conda activate class_env.
 
